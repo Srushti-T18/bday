@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Catch My Love! ❤️</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* CRITICAL: This overrides the 'top: 25%' from your style.css */
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start; /* Forces content to the very top */
+      padding-top: 10px;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden; /* Stops page bouncing on mobile */
+    }
+
+    /* New wrapper that doesn't use the .container name */
+    .game-layout {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin: 10px 0 5px 0;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    }
+
+    #score-board {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    #game-area {
+      position: relative;
+      width: 90%;
+      max-width: 400px;
+      height: 65vh; /* Responsive height */
+      background: rgba(255, 255, 255, 0.25);
+      border: 3px solid white;
+      border-radius: 20px;
+      overflow: hidden;
+      touch-action: none; /* Crucial for mobile play */
+    }
+
+    .falling-heart {
+      position: absolute;
+      font-size: 30px;
+      user-select: none;
+      z-index: 5;
+    }
+
+    #basket {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      font-size: 55px;
+      transform: translateX(-50%);
+      transition: left 0.05s linear;
+      z-index: 6;
+    }
+
+    /* Pop effect when heart is caught */
+    .burst {
+      position: absolute;
+      animation: explode 0.4s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes explode {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+
+    #win-screen {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      color: #ff4d6d;
+      padding: 30px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      z-index: 100;
+      width: 80%;
+      max-width: 300px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-layout">
+    <h1>Catch 20 Hearts! 💘</h1>
+    <div id="score-board">Score: <span id="score">0</span></div>
+    
+    <div id="game-area">
+      <div id="basket">🧺</div>
+    </div>
+
+    <div id="win-screen" style="display:none;">
+      <h2>YOU WON! 🏆</h2>
+      <p>You caught my heart!</p>
+      <button onclick="window.location.href='page2.html'">See My Message</button>
+    </div>
+  </div>
+
+  <script>
+    const area = document.getElementById('game-area');
+    const basket = document.getElementById('basket');
+    const scoreDisplay = document.getElementById('score');
+    const winScreen = document.getElementById('win-screen');
+    
+    let score = 0;
+    let isGameOver = false;
+
+    // Control Basket with Mouse or Touch
+    function moveHandler(e) {
+      if (isGameOver) return;
+      const rect = area.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      let x = clientX - rect.left;
+      
+      // Keep inside bounds
+      if (x < 30) x = 30;
+      if (x > rect.width - 30) x = rect.width - 30;
+      
+      basket.style.left = x + 'px';
+    }
+
+    area.addEventListener('mousemove', moveHandler);
+    area.addEventListener('touchmove', moveHandler);
+
+    function createHeart() {
+      if (isGameOver) return;
+
+      const heart = document.createElement('div');
+      heart.className = 'falling-heart';
+      heart.innerHTML = '❤️';
+      heart.style.left = Math.random() * (area.clientWidth - 40) + 'px';
+      heart.style.top = '-50px';
+      area.appendChild(heart);
+
+      let fallSpeed = 4 + Math.random() * 3; // Random speeds
+      
+      let interval = setInterval(() => {
+        let top = parseFloat(heart.style.top);
+        heart.style.top = (top + fallSpeed) + 'px';
+
+        // Collision Detection
+        if (top > (area.clientHeight - 80) && top < (area.clientHeight - 20)) {
+          let bPos = basket.offsetLeft;
+          let hPos = heart.offsetLeft;
+          
+          if (hPos > bPos - 40 && hPos < bPos + 40) {
+            score++;
+            scoreDisplay.innerText = score;
+            createBurst(hPos, top);
+            heart.remove();
+            clearInterval(interval);
+            if (score >= 20) winGame();
+          }
+        }
+
+        if (top > area.clientHeight) {
+          heart.remove();
+          clearInterval(interval);
+        }
+      }, 20);
+    }
+
+    function createBurst(x, y) {
+      const b = document.createElement('div');
+      b.className = 'falling-heart burst';
+      b.innerHTML = '✨';
+      b.style.left = x + 'px';
+      b.style.top = y + 'px';
+      area.appendChild(b);
+      setTimeout(() => b.remove(), 400);
+    }
+
+    function winGame() {
+      isGameOver = true;
+      winScreen.style.display = 'block';
+      // Stop the game visually
+      area.style.opacity = "0.3";
+    }
+
+    // Spawn hearts
+    setInterval(createHeart, 600);
+  </script>
+</body>
+</html>
