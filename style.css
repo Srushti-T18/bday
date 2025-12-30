@@ -1,0 +1,111 @@
+body {
+  margin: 0;
+  height: 100vh;
+  /* background: linear-gradient(to top right, #ff9a9e, #fad0c4); */
+  overflow-y: auto;
+  margin: 0;
+  background: linear-gradient(to bottom, #ff9a9e, #fad0c4);
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+  color: white;
+}
+
+.container {
+  position: relative;
+  top: 25%;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+button {
+  padding: 14px 25px;
+  margin: 10px;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  background: #ff4d6d;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  transform: scale(1.1);
+}
+
+.typewriter {
+  font-size: 22px;
+  margin: 20px;
+  min-height: 40px;
+}
+
+/* BALLOONS */
+.balloons::before,
+.balloons::after {
+  content: "🎈 🎈 🎈 🎈";
+  position: absolute;
+  bottom: -120px;
+  font-size: 60px;
+  animation: float 10s linear infinite;
+  opacity: 0.9;
+}
+
+/* LEFT SIDE BALLOONS */
+.balloons::before {
+  left: 20px;
+}
+
+/* RIGHT SIDE BALLOONS */
+.balloons::after {
+  right: 20px;
+}
+
+/* FLOAT ANIMATION */
+@keyframes float {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-130vh);
+  }
+}
+
+.love-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.love-text {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  color: white;
+  margin-top: 0px;
+}
+
+.love-photo {
+  max-width: 80%;
+  max-height: 60vh;
+  height: auto;
+  width: auto;
+  border-radius: 20px;
+  object-fit: contain;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.love-message {
+  font-size: 18px;
+  text-align: center;
+  color: rgb(92, 49, 85);
+  max-width: 90%;          /* allows text to spread wider */
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: -10px;
+  line-height: 1.3;
+}
+
+
